@@ -1,0 +1,65 @@
+
+===인사===
+puts '안녕하세요!'
+
+===메뉴선택===
+menu = ["20층", "순남시래기", "양자강", "한우"]
+lunch = menu.sample
+puts lunch
+
+===점심,저녁 메뉴선택===
+menu = ["맥도날드","버거킹","순남시래기","시골밥상"]
+choice = menu.sample(2)
+
+lunch = "점심에는 "+choice[0]+"을(를) 먹고"
+dinner = "저녁에는 "+choice[1]+"을(를) 먹는다"
+puts lunch,dinner
+
+===로또===
+numbers=*(1..45) #int형 1~45저장
+#numbers=('1'..'45').to_a #to array이고 char 1~45저장
+Lotto = numbers.sample(5).sort
+bonus = numbers.sample
+puts "이번주 추천 로또 숫자는"+Lotto.to_s+"이고 보너스는 "+bonus.to_s+"입니다."
+
+===미세먼지 농도===
+require 'httparty'
+url = URI.encode("http://openapi.airkorea.or.kr/openapi/services/rest/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty?stationName=강남구&dataTerm=MONTH&numOfRows=100&ServiceKey=")+key
+response = HTTParty.get(url)
+dust = response['response']['body']['items']['item'][0]['pm10Value'].to_i
+
+puts "오늘의 미세먼지농도는 " + dust.to_s + " 입니다" #하나의 문자열로 만들어야하기 때문에 to_s를 쓴다
+
+case dust
+  when 0..30 # 0부터 30까지
+    print "좋음"
+  when 30..80
+    print "보통"
+  when 80..150
+    puts "나쁨"
+  else
+    puts "매우나쁨"
+end
+
+# xml은 태그(<response>를 통해 파싱하는 방식임. json 또한 동일)
+#puts response
+
+===반복문 설명===
+# 반복문
+#[1,2,3].each do lxl ~~~~ end # 제일 많이 씀
+#3.times 
+#for i in [1,2,3] ~~~~ end
+
+===코스피===
+require 'httparty'
+require 'nokogiri'
+
+url = "http://finance.daum.net/quote/kospi.daum?nil_stock=refresh"
+#강사님은 uri.encode없이 get에 주소를 그냥 넣음
+response = HTTParty.get(url)
+kospi = Nokogiri::HTML(response)
+
+#hyunCost는 인터넷창에서 f12눌러서 해당 코스피 값을 가져온거임.
+result = kospi.css("#hyenCost > b")
+
+puts result.text
